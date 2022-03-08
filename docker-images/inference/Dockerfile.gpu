@@ -1,0 +1,33 @@
+FROM ariqbasyar/pytorch:v1.9-py3.6.9-yolov5-gpu
+
+RUN --mount=type=cache,target=/var/cache/apt_update apt update \
+    && apt install -y --no-install-recommends \
+    libssl-dev \
+    zlib1g-dev \
+    curl \
+    gcc \
+    g++
+
+RUN pip3 install --upgrade pip setuptools wheel
+
+ARG LIBRDKAFKA_VER=1.6.2
+ARG LIBKAFKA=librdkafka-$LIBRDKAFKA_VER
+RUN --mount=type=cache,target=/var/cache/librdkafka \
+    curl -L https://github.com/edenhill/librdkafka/archive/refs/tags/v$LIBRDKAFKA_VER.tar.gz | tar xzf - \
+        && cd $LIBKAFKA\
+        && ./configure --prefix=/usr \
+        && make \
+        && make install
+
+ARG C_KAFKA_VER=1.8.2
+ARG KAFKA=confluent-kafka-python-$C_KAFKA_VER
+RUN --mount=type=cache,target=/var/cache/kafka \
+    curl -L https://github.com/confluentinc/confluent-kafka-python/archive/refs/tags/v$C_KAFKA_VER.tar.gz | tar xzf - \
+        && cd $KAFKA \
+        && python3 setup.py build \
+        && python3 setup.py install
+
+RUN rm -rf $LIBKAFKA $KAFKA
+
+RUN pip3 install flask
+

@@ -1,0 +1,19 @@
+ARG PYTHON_VER=3.8.2
+
+FROM python:${PYTHON_VER}-slim-buster as build
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        ccache \
+        cmake \
+        curl \
+        git \
+        libjpeg-dev \
+        libpng-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install --upgrade pip \
+    pyyaml typing-extensions numpy torch torchvision
+
