@@ -20,4 +20,3 @@ spec:
             - containerPort: 8000
               protocol: TCP
               name: flask-port
-

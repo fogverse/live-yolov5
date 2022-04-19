@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deepfog-input-deployment
+spec:
+  selector:
+    matchLabels:
+      app: deepfog-input-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: deepfog-input-deployment
+        input: "true"
+    spec:
+      containers:
+      - name: deepfog-input-container
+        image: 192.168.1.180:5000/ariqbasyar/final-project:input-1
+        imagePullPolicy: Always
+        env:
+        - name: BOOTSTRAP_SERVERS
+          value: "192.168.1.190:9092,192.168.1.191:9092,192.168.1.192:9092"
+        volumeMounts:
+        - name: device-video0
+          mountPath: /dev/video0
+        securityContext:
+          privileged: true
+      volumes:
+      - name: device-video0
+        hostPath:
+          path: /dev/video0
+      nodeSelector:
+        kubernetes.io/hostname: debian-camera
