@@ -1,6 +1,5 @@
-set -x
-echo "$DREG"
+echo "\$DREG=$DREG"
 docker buildx build \
     --platform linux/amd64,linux/arm64 \
-    -t ${DREG}ariqbasyar/final-project:master \
+    -t ${DREG}ariqbasyar/final-project:client \
     --push .

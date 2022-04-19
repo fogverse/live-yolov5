@@ -1,7 +1,6 @@
 FROM ubuntu:20.04
 
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Moscow
+ENV TZ=Asia/Jakarta
 
 RUN --mount=type=cache,target=/var/cache/apt_update apt update \
     && apt install -y --no-install-recommends \

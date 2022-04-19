@@ -1,14 +1,18 @@
-FROM ariqbasyar/opencv:v4.5.5-py3.8.10 as build
+FROM ubuntu:20.04
+
+ENV TZ=Asia/Jakarta
 
 RUN --mount=type=cache,target=/var/cache/apt_update apt update \
     && apt install -y \
-    libssl-dev \
-    zlib1g-dev \
-    gcc \
-    g++ \
-    make \
-    git \
-    curl
+        python-is-python3 \
+        python3-pip \
+        python3-dev \
+        libssl-dev \
+        zlib1g-dev \
+        gcc \
+        g++ \
+        make \
+        curl
 
 ARG LIBRDKAFKA_VER=1.6.2
 ARG LIBKAFKA=librdkafka-$LIBRDKAFKA_VER
@@ -30,3 +34,4 @@ RUN --mount=type=cache,target=/var/cache/kafka \
 RUN rm -rf $LIBKAFKA $KAFKA
 
 RUN pip install flask
+
