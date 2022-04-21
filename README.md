@@ -5,8 +5,8 @@ of implementation, see also [FogVerse](https://github.com/fogverse/fogverse).
 Description, Contribution, etc coming soon.
 
 ## Keywords
-Internet of Things, Fog Computing, Edge Computing, Real-time, Video
-Preprocessing.
+Internet of Things, Fog Computing, Edge Computing,
+Real-time, Video Preprocessing.
 
 ## Technologies
 Docker, Kubernetes.
@@ -15,7 +15,10 @@ Docker, Kubernetes.
 - [ ] Code Documentation.
 
 ## Future Works / Paper Opportunity
-- [ ] Lossless / minimum-loss image/video preprocessing.
+- [ ] Improvement on pixel loss and performance
+trade off image/video compression.
+- [ ] Improvement on image/video preprocessing.
+- [ ] Storage.
 
 ## Cite this Work
 Coming soon.
