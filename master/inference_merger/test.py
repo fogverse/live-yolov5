@@ -139,6 +139,30 @@ class TestConsumerStorage(TestCase):
         self.assertDictEqual(storage.get_data(), _data)
 
     @patch('fogverse.consumer_producer._Consumer')
+    def test_send_type_input_lt_last_frame_idx(self, mock_consumer):
+        message = MagicMock()
+        message.headers.return_value = {'type':'','frame':4,'cam': 'cam_1'}
+        message.topic.return_value = 'input'
+
+        data = compress_encoding(self.img, 'jpg')
+
+        storage = MyConsumerStorage()
+        storage.message = message
+        _data = {
+            'cam_1': {
+                'n': 1,
+                'avg_delay': 50 * 1E3,
+                'timestamp': 51,
+                'last_frame_idx': 5,
+                'data': [],
+            }
+        }
+        storage._data = _data
+        storage.send(data)
+
+        self.assertDictEqual(storage.get_data(), _data)
+
+    @patch('fogverse.consumer_producer._Consumer')
     @patch('master.inference_merger.inference_merger.box_label')
     def test_send_type_inference(self, mock_box_label, mock_consumer):
         input_message = MagicMock()
