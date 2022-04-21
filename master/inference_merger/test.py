@@ -33,7 +33,7 @@ class TestConsumerStorage(TestCase):
         self.assertDictEqual(storage.get_data(), {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 51,
                 'last_frame_idx': -1,
                 'data': [],
@@ -102,7 +102,7 @@ class TestConsumerStorage(TestCase):
         _data = {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 51,
                 'last_frame_idx': -1,
                 'data': [],
@@ -151,7 +151,7 @@ class TestConsumerStorage(TestCase):
         _data = {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 51,
                 'last_frame_idx': 5,
                 'data': [],
@@ -173,7 +173,7 @@ class TestConsumerStorage(TestCase):
         _data = {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 51,
                 'last_frame_idx': -1,
                 'data': [{
@@ -201,7 +201,7 @@ class TestConsumerStorage(TestCase):
         self.assertEqual(storage.get_data(), {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 51,
                 'last_frame_idx': -1,
                 'data': [{
@@ -222,7 +222,7 @@ class TestConsumerStorage(TestCase):
         _data = {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 51,
                 'last_frame_idx': -1,
                 'data': [{
@@ -248,7 +248,7 @@ class TestConsumerStorage(TestCase):
         self.assertEqual(storage.get_data(), {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 51,
                 'last_frame_idx': -1,
                 'data': [{
@@ -367,7 +367,7 @@ class TestConsumerStorage(TestCase):
         self.assertDictEqual(storage.get_data(), {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 50,
                 'last_frame_idx': -1,
                 'data': [{
@@ -431,7 +431,7 @@ class TestConsumerStorage(TestCase):
         self.assertDictEqual(storage.get_data(), {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 50,
                 'last_frame_idx': -1,
                 'data': [{
@@ -457,7 +457,7 @@ class TestProducer(TestCase):
         message = {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 50,
                 'last_frame_idx': -1,
                 'data': [{
@@ -491,7 +491,7 @@ class TestProducer(TestCase):
         message = {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 50,
                 'last_frame_idx': -1,
                 'data': data,
@@ -504,7 +504,7 @@ class TestProducer(TestCase):
 
         self.assertDictEqual(result, {
             'cam_1': {
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'data': [{
                     'data': data_img,
                     'headers': final_message.headers()
@@ -513,7 +513,7 @@ class TestProducer(TestCase):
         })
         self.assertDictEqual(producer.data, {
             'cam_1': {
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'data': [],
                 'last_frame_idx': 1,
                 'n': 1,
@@ -543,7 +543,7 @@ class TestProducer(TestCase):
         message = {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 70 * 1E3,
+                'avg_delay': 70,
                 'timestamp': 50,
                 'last_frame_idx': -1,
                 'data': data,
@@ -556,7 +556,7 @@ class TestProducer(TestCase):
 
         self.assertDictEqual(result, {
             'cam_1': {
-                'avg_delay': 70 * 1E3,
+                'avg_delay': 70,
                 'data': [{
                     'data': data_img,
                     'headers': final_message.headers()
@@ -565,7 +565,7 @@ class TestProducer(TestCase):
         })
         self.assertDictEqual(producer.data, {
             'cam_1': {
-                'avg_delay': 70 * 1E3,
+                'avg_delay': 70,
                 'data': [{
                     'message': final_message,
                     'data': data_img,
@@ -583,7 +583,7 @@ class TestProducer(TestCase):
         data_img = numpy_to_base64_url(self.img, 'jpg')
         data = {
             'cam_1': {
-                'avg_delay': 70 * 1E3,
+                'avg_delay': 70,
                 'data': [{
                     'data': data_img,
                     'headers': {}
@@ -603,7 +603,7 @@ class TestProducer(TestCase):
     def test__send(self, mock_sleep, mock_send, mock_producer):
         data_img = numpy_to_base64_url(self.img, 'jpg')
         data = {
-            'avg_delay': 70 * 1E3,
+            'avg_delay': 70,
             'data': [{
                 'data': data_img,
                 'headers': {}
@@ -613,7 +613,7 @@ class TestProducer(TestCase):
         producer = MyProducer(self.storage)
         producer._send(data, 'cam_1')
 
-        mock_sleep.assert_called_once_with(70 * 1E3)
+        mock_sleep.assert_called_once_with(70 / 1E3)
         mock_send.assert_called_once_with(data_img,
                                           topic='final_cam_1',
                                           headers={})
@@ -656,7 +656,7 @@ class TestProducer(TestCase):
         message = {
             'cam_1': {
                 'n': 1,
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'timestamp': 50,
                 'last_frame_idx': -1,
                 'data': data,
@@ -668,7 +668,7 @@ class TestProducer(TestCase):
 
         expected_data = {
             'cam_1': {
-                'avg_delay': 50 * 1E3,
+                'avg_delay': 50,
                 'data': [{
                     'data': data_img,
                     'headers': {'frame': 1}
@@ -685,8 +685,8 @@ class TestProducer(TestCase):
                                         args=(expected_data['cam_1'], 'cam_1'))
         self.assertListEqual(
             [
-                mock.call(50 * 1E3),
-                mock.call(50 * 1E3),
+                mock.call(50 / 1E3),
+                mock.call(50 / 1E3),
             ],
             mock_sleep.mock_calls
         )

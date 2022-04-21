@@ -46,7 +46,7 @@ class MyConsumerStorage(Consumer):
             self.start = time.time()
         data = super().receive()
         if data is None: return None
-        self.delta = (time.time() - self.start) * 1E3
+        self.delta = time.time() - self.start
         self.start = -1
 
         headers = data.headers()
@@ -134,7 +134,7 @@ class MyProducer(Producer):
         self.consumer = consumer
         self.auto_decode = False
         self.auto_encode = False
-        self.thresh = os.getenv('WAIT_THRESH', 350) * 1e3
+        self.thresh = os.getenv('WAIT_THRESH', 350)
         Producer.__init__(self)
 
     @property
@@ -148,7 +148,7 @@ class MyProducer(Producer):
         send_data = {}
         for cam_id, data in self.message.items():
             if len(data['data']) == 0: continue
-            elapsed = (time.time() - data['timestamp'])*1e3
+            elapsed = time.time() - data['timestamp']
             if elapsed < self.thresh: continue
             avg_delay = data['avg_delay']
             num_frame = int(self.thresh // avg_delay) or 1
@@ -172,7 +172,7 @@ class MyProducer(Producer):
     def _send(self, data, cam_id):
         for frame in data['data']:
             avg_delay = data['avg_delay']
-            time.sleep(avg_delay)
+            time.sleep(avg_delay / 1E3)
             topic = f'final_{cam_id}'
             headers = frame['headers']
             super().send(frame['data'], topic=topic, headers=headers)
