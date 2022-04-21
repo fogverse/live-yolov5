@@ -183,4 +183,3 @@ cython_debug/
 
 *.config
 yolov5*
-fogverse*
