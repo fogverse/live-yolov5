@@ -1,0 +1,3 @@
+[submodule "fogverse"]
+	path = fogverse
+	url = https://github.com/fogverse/fogverse.git
