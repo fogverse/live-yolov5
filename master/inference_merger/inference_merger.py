@@ -1,13 +1,10 @@
-import base64
 import bisect
-import math
 import os
 import time
 
 from threading import Thread
 
 from fogverse import Producer, Consumer
-from fogverse.util import bytes_to_numpy
 from .util import (
     box_label, compress_encoding, numpy_to_base64_url, recover_encoding
 )
@@ -25,29 +22,26 @@ class KeyWrapper:
     def __len__(self):
         return len(self.it)
 
-class MyConsumerStorage(Consumer):
+class MyConsumerStorage(Consumer, Thread):
     def __init__(self):
         self.consumer_topic = ['input']
         self.auto_encode = False
         self._data = {}
-        self.start = -1
+        self.start_time = -1
         self.delta = -1
-        super().__init__()
-
-    def on_error(self, err):
-        pass
-        # raise err
+        Consumer.__init__(self)
+        Thread.__init__(self)
 
     def get_data(self):
         return self._data
 
     def receive(self):
-        if self.start == -1:
-            self.start = time.time()
+        if self.start_time == -1:
+            self.start_time = time.time()
         data = super().receive()
         if data is None: return None
-        self.delta = time.time() - self.start
-        self.start = -1
+        self.delta = time.time() - self.start_time
+        self.start_time = -1
 
         headers = data.headers()
         cam_id = headers['cam']
