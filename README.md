@@ -1,6 +1,6 @@
 # Live YOLOv5
 > This work is developed together with FogVerse core library as an example
-of implementation, see also [FogVerse](https://github.com/fogverse/fogverse).
+of implementation, see [FogVerse](https://github.com/fogverse/fogverse).
 
 Description, Contribution, etc coming soon.
 
@@ -13,6 +13,7 @@ Docker, Kubernetes.
 
 ## TODOs
 - [ ] Code Documentation.
+- [ ] Code Styling and Linter.
 
 ## Future Works / Paper Opportunity
 - [ ] Improvement on pixel loss and performance
