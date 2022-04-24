@@ -1,0 +1,35 @@
+server:
+  server_1: 192.168.1.190:9092,192.168.1.191:9092
+  server_2: 192.168.1.195:9092,192.168.1.196:9092
+
+topic:
+  input:
+    partitions: 2
+    server: server_1
+    config:
+      retention.ms: 2000
+      segment.bytes: 9300000
+      segment.ms: 1200
+  preprocess:
+    partitions: 2
+    server: server_2
+    config:
+      retention.ms: 2000
+      segment.bytes: 3100000
+      segment.ms: 1200
+  result:
+    partitions: 1
+    server:
+      - server_1
+      - server_2
+    config:
+      retention.ms: 120000
+      segment.bytes: 10000000
+      segment.ms: 1200
+  final_cam_1:
+    partitions: 1
+    server: server_1
+    config:
+      retention.ms: 22000
+      segment.bytes: 10000000
+      segment.ms: 5500
