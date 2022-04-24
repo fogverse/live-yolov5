@@ -36,7 +36,7 @@ class TestProducer(TestCase):
 
         encoded_image = numpy_to_bytes(img)
 
-        key = 1
+        key = '1'
         headers = {
             'cam': f'cam_{cam_id}',
             'frame': '1',

@@ -20,7 +20,7 @@ class MyProducer(OpenCVConsumer, Producer):
         print(msg)
 
     def send(self, data):
-        key = self.frame_idx
+        key = str(self.frame_idx)
         headers = {
             'cam': self.cam_id,
             'frame': str(self.frame_idx),
