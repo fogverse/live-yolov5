@@ -31,4 +31,4 @@ if __name__ == '__main__':
     consumer = MyConsumer()
     fog = MyPreprocess(consumer)
     consumer.start()
-    fog.start()
+    fog.run()
