@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deepfog-input-deployment
+  name: fogverse-input-deployment
 spec:
   selector:
     matchLabels:
-      app: deepfog-input-deployment
+      app: fogverse-input-deployment
   replicas: 1
   template:
     metadata:
       labels:
-        app: deepfog-input-deployment
+        app: fogverse-input-deployment
         input: "true"
     spec:
       containers:
-      - name: deepfog-input-container
+      - name: fogverse-input-container
         image: 192.168.1.180:5000/ariqbasyar/final-project:input-1
         imagePullPolicy: Always
         env:
-        - name: BOOTSTRAP_SERVERS
+        - name: PRODUCER_SERVERS
           value: "192.168.1.190:9092,192.168.1.191:9092,192.168.1.192:9092"
         volumeMounts:
         - name: device-video0

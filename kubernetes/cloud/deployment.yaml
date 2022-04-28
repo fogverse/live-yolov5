@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fogverse-jetson-deployment
+  name: fogverse-cloud-deployment
 spec:
   selector:
     matchLabels:
-      app: fogverse-jetson-deployment
+      app: fogverse-cloud-deployment
   replicas: 1
   template:
     metadata:
       labels:
-        app: fogverse-jetson-deployment
-        jetson: "true"
+        app: fogverse-cloud-deployment
+        cloud: "true"
     spec:
       containers:
-      - name: fogverse-jetson-container
-        image: ariqbasyar/final-project:inference-gpu-jetson
+      - name: fogverse-cloud-container
+        image: ariqbasyar/final-project:inference-cpu-cloud
         imagePullPolicy: Always
         env:
         - name: CONSUMER_SERVERS

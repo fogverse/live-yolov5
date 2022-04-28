@@ -1,22 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-hostname-deployment
+  name: fogverse-preprocess-deployment
 spec:
   selector:
     matchLabels:
-      app: flask-hostname-deployment
-  replicas: 2
+      app: fogverse-preprocess-deployment
+  replicas: 1
   template:
     metadata:
       labels:
-        app: flask-hostname-deployment
+        app: fogverse-preprocess-deployment
+        preprocess: "true"
     spec:
       containers:
-        - name: flask-hostname-container
-          image: ariqbasyar/flask-hostname:3.8-slim
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 8000
-              protocol: TCP
-              name: flask-port
+      - name: fogverse-preprocess-container
+        image: ariqbasyar/final-project:preprocess-raspberrypi
+        imagePullPolicy: Always
+        env:
+        - name: CONSUMER_SERVERS
+          value: "192.168.1.190:9092,192.168.1.191:9092,192.168.1.192:9092"
+        - name: PRODUCER_SERVERS
+          value: "CLOUD"
+      nodeSelector:
+        kubernetes.io/hostname: raspberrypi
