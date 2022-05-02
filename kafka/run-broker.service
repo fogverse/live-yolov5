@@ -1,9 +1,0 @@
-[Unit]
-Description=Run kafka broker.
-
-[Service]
-Type=simple
-ExecStart=/bin/bash /home/ariqbasyar/kafka_2.13-3.1.0/start-broker.sh
-
-[Install]
-WantedBy=multi-user.target
