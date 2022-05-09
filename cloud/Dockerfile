@@ -1,7 +1,7 @@
 ARG DREG # docker registry
-FROM ${DREG}ariqbasyar/final-project:inference-cpu
+FROM ${DREG}ariqbasyar/fogverse:inference-cpu
 
 WORKDIR /app
 COPY fogverse .
-COPY cloud/inference-2.py .
+COPY cloud/inference.py .
 CMD ["python", "inference.py"]

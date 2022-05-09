@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: fogverse-cloud-container
-        image: ariqbasyar/final-project:inference-cpu-cloud
+        image: ariqbasyar/fogverse:inference-cpu-cloud
         imagePullPolicy: Always
         env:
         - name: CONSUMER_SERVERS

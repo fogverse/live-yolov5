@@ -1,5 +1,5 @@
 ARG DREG # docker registry
-FROM ${DREG}ariqbasyar/final-project:master
+FROM ${DREG}ariqbasyar/fogverse:master
 
 WORKDIR /app
 COPY master/inference_merger/*.py .

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: fogverse-input-container
-        image: 192.168.1.180:5000/ariqbasyar/final-project:input-1
+        image: ariqbasyar/fogverse:input-1
         imagePullPolicy: Always
         env:
         - name: PRODUCER_SERVERS

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: fogverse-preprocess-container
-        image: ariqbasyar/final-project:preprocess-raspberrypi
+        image: ariqbasyar/fogverse:preprocess-raspberrypi
         imagePullPolicy: Always
         env:
         - name: CONSUMER_SERVERS

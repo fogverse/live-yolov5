@@ -26,5 +26,3 @@ RUN --mount=type=cache,target=/var/cache/kafka \
 
 RUN rm -rf $LIBKAFKA $KAFKA
 
-RUN pip install flask
-

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: fogverse-jetson-container
-        image: ariqbasyar/final-project:inference-gpu-jetson
+        image: ariqbasyar/fogverse:inference-gpu-jetson
         imagePullPolicy: Always
         env:
         - name: CONSUMER_SERVERS

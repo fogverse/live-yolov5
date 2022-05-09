@@ -1,5 +1,5 @@
 ARG DREG # docker registry
-FROM ${DREG}ariqbasyar/final-project:preprocess
+FROM ${DREG}ariqbasyar/fogverse:preprocess
 
 WORKDIR /app
 COPY fog/raspberrypi4/preprocess.py .

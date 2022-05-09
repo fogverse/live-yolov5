@@ -1,5 +1,5 @@
 ARG DREG # docker registry
-FROM ${DREG}ariqbasyar/final-project:input
+FROM ${DREG}ariqbasyar/fogverse:input
 
 WORKDIR /app
 COPY input/producer.py .
