@@ -1,28 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fogverse-jetson-deployment
+  name: fogverse-master-deployment
 spec:
   selector:
     matchLabels:
-      app: fogverse-jetson-deployment
+      app: fogverse-master-deployment
   replicas: 1
   template:
     metadata:
       labels:
-        app: fogverse-jetson-deployment
-        jetson: "true"
+        app: fogverse-master-deployment
+        master: "true"
     spec:
       containers:
-      - name: fogverse-jetson-container
-        image: ariqbasyar/fogverse:inference-gpu-jetson
-        resources:
-          requests:
-            memory: "500M"
-            cpu: "250m"
-          limits:
-            memory: "2700M"
-            cpu: "750m"
+      - name: fogverse-master-container
+        image: ariqbasyar/fogverse:master-inference-merger
         imagePullPolicy: Always
         env:
         - name: CONSUMER_SERVERS
@@ -30,4 +23,4 @@ spec:
         - name: PRODUCER_SERVERS
           value: "192.168.1.190:9092,192.168.1.191:9092,192.168.1.192:9092"
       nodeSelector:
-        kubernetes.io/hostname: jetson-nano
+        kubernetes.io/hostname: debian-master
