@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fogverse-master-deployment
+  name: fogverse-master-merger-deployment
 spec:
   selector:
     matchLabels:
-      app: fogverse-master-deployment
+      app: fogverse-master-merger-deployment
   replicas: 1
   template:
     metadata:
       labels:
-        app: fogverse-master-deployment
-        master: "true"
+        app: fogverse-master-merger-deployment
+        master-merger: "true"
     spec:
       containers:
-      - name: fogverse-master-container
+      - name: fogverse-master-merger-container
         image: ariqbasyar/fogverse:master-inference-merger
         imagePullPolicy: Always
         env:
         - name: CONSUMER_SERVERS
-          value: "192.168.1.190:9092,192.168.1.191:9092,192.168.1.192:9092"
+          value: "$LOCAL"
         - name: PRODUCER_SERVERS
-          value: "192.168.1.190:9092,192.168.1.191:9092,192.168.1.192:9092"
+          value: "$LOCAL"
       nodeSelector:
         kubernetes.io/hostname: debian-master

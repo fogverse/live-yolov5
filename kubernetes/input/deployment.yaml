@@ -19,7 +19,7 @@ spec:
         imagePullPolicy: Always
         env:
         - name: PRODUCER_SERVERS
-          value: "192.168.1.190:9092,192.168.1.191:9092,192.168.1.192:9092"
+          value: "$LOCAL"
         volumeMounts:
         - name: device-video0
           mountPath: /dev/video0

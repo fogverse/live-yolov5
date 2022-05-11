@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fogverse-master-forwarder-deployment
+spec:
+  selector:
+    matchLabels:
+      app: fogverse-master-forwarder-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fogverse-master-forwarder-deployment
+        master-forwarder: "true"
+    spec:
+      containers:
+      - name: fogverse-master-forwarder-container
+        image: ariqbasyar/fogverse:master-forwarder
+        imagePullPolicy: Always
+        env:
+        - name: CONSUMER_SERVERS
+          value: "$LOCAL"
+        - name: PRODUCER_SERVERS
+          value: "$LOCAL"
+      nodeSelector:
+        kubernetes.io/hostname: debian-master

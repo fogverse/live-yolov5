@@ -19,8 +19,8 @@ spec:
         imagePullPolicy: Always
         env:
         - name: CONSUMER_SERVERS
-          value: "192.168.1.190:9092,192.168.1.191:9092,192.168.1.192:9092"
+          value: "$CLOUD"
         - name: PRODUCER_SERVERS
-          value: "192.168.1.190:9092,192.168.1.191:9092,192.168.1.192:9092"
+          value: "$CLOUD"
       nodeSelector:
         cloud.google.com/gke-nodepool: pool-tugas-akhir
