@@ -4,6 +4,14 @@ import yaml
 from confluent_kafka import admin, KafkaError, KafkaException
 from pathlib import Path
 
+def check_server_env(server):
+    new = server.copy()
+    for server_name, host in new.items():
+        if host.startswith('$'):
+            host = os.getenv(host[1:])
+        new[server_name] = host
+    return new
+
 def create_topic(topics, admin):
     if not isinstance(topics, list):
         topics = [topics]
@@ -31,7 +39,7 @@ def main():
     with open(parent / 'topic.yaml') as file:
         config = yaml.safe_load(file)
     topic = config['topic']
-    server = config['server']
+    server = check_server_env(config['server'])
     for server_name, host in server.items():
         admins[server_name] = admin.AdminClient({'bootstrap.servers':host})
     for topic_name, attr in topic.items():
