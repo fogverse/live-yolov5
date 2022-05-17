@@ -19,8 +19,8 @@ spec:
         imagePullPolicy: Always
         env:
         - name: CONSUMER_SERVERS
-          value: "$CLOUD"
+          value: "kafka-server-1"
         - name: PRODUCER_SERVERS
-          value: "$CLOUD"
+          value: "kafka-server-1"
       nodeSelector:
         cloud.google.com/gke-nodepool: pool-tugas-akhir

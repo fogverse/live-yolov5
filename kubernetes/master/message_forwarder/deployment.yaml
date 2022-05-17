@@ -17,9 +17,13 @@ spec:
       - name: fogverse-master-forwarder-container
         image: ariqbasyar/fogverse:master-forwarder
         imagePullPolicy: Always
+        hostAliases:
+        - ip: "$CLOUD"
+          hostnames:
+          - "kafka-server-1"
         env:
         - name: CONSUMER_SERVERS
-          value: "$LOCAL"
+          value: "kafka-server-1"
         - name: PRODUCER_SERVERS
           value: "$LOCAL"
       nodeSelector:

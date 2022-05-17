@@ -16,11 +16,22 @@ spec:
       containers:
       - name: fogverse-preprocess-container
         image: ariqbasyar/fogverse:preprocess-raspberrypi
+        resources:
+          requests:
+            memory: "5M"
+            cpu: "20m"
+          limits:
+            memory: "400M"
+            cpu: "400m"
         imagePullPolicy: Always
+        hostAliases:
+        - ip: "$CLOUD"
+          hostnames:
+          - "kafka-server-1"
         env:
         - name: CONSUMER_SERVERS
           value: "$LOCAL"
         - name: PRODUCER_SERVERS
-          value: "$CLOUD"
+          value: "kafka-server-1"
       nodeSelector:
         kubernetes.io/hostname: raspberrypi
