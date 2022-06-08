@@ -4,4 +4,4 @@ FROM ${DREG}ariqbasyar/fogverse:inference-gpu
 WORKDIR /app
 COPY fog/jetson_nano/inference.py .
 COPY fogverse/ fogverse/
-CMD ["python", "inference.py"]
+CMD ["python3", "inference.py"]

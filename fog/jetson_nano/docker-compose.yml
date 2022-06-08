@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  jetson-pod:
+    image: ariqbasyar/fogverse:inference-gpu-jetson
+    volumes:
+      - ./logs/:/app/logs/
+    environment:
+    - CONSUMER_SERVERS=${LOCAL_KAFKA}
+    - PRODUCER_SERVERS=${LOCAL_KAFKA}
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 2500M
+        reservations:
+          devices:
+            - capabilities: [gpu]

@@ -1,49 +1,61 @@
 import os
+import asyncio
 import cv2
-import numpy as np
 import torch
 
-from fogverse import ConsumerStorage, Producer
-from threading import Thread
+from fogverse import Consumer, Producer, ConsumerStorage
+from fogverse.logging.logging import CsvLogging
+from fogverse.util import numpy_to_bytes
 
-from fogverse.util import bytes_to_numpy, numpy_to_bytes
-
-class MyConsumer(ConsumerStorage, Thread):
+class MyConsumer(Consumer, ConsumerStorage):
     def __init__(self, keep_messages=False):
         self.consumer_topic = ['input']
+        Consumer.__init__(self)
         ConsumerStorage.__init__(self, keep_messages=keep_messages)
-        Thread.__init__(self)
 
-class MyJetson(Producer):
+class MyJetson(CsvLogging, Producer):
     def __init__(self, consumer):
         MODEL = os.getenv('MODEL', 'yolov5n')
         self.model = torch.hub.load('ultralytics/yolov5', MODEL)
         self.producer_topic = 'result'
         self.consumer = consumer
-        super().__init__()
+        CsvLogging.__init__(self)
+        Producer.__init__(self)
 
-    def receive(self):
-        return self.consumer.get()
+    async def receive(self):
+        return await self.consumer.get()
 
-    def decode(self, data):
-        self.message = data['message']
-        return super().decode(data['data'])
-
-    def process(self, preprocessed):
-        results = self.model(preprocessed)
+    def _process(self, data):
+        results = self.model(data)
         return results.render()[0]
+
+    async def process(self, data):
+        return await self._loop.run_in_executor(None,
+                                               self._process,
+                                               data)
 
     def encode(self, img):
         _, encoded = cv2.imencode('.jpg', img)
         return numpy_to_bytes(encoded)
 
-    def send(self, data):
-        headers = {**self.message.headers(),
-                    'type': 'final'}
-        super().send(data, headers=headers)
+    async def send(self, data):
+        headers = list(self.message.headers)
+        headers.append(('type',b'final'))
+        await super().send(data, headers=headers)
+
+async def main():
+    consumer = MyConsumer()
+    producer = MyJetson(consumer)
+    tasks = [consumer.run(), producer.run()]
+    try:
+        await asyncio.gather(*tasks)
+    finally:
+        for t in tasks:
+            t.close()
 
 if __name__ == '__main__':
-    consumer = MyConsumer()
-    inference = MyJetson(consumer)
-    consumer.start()
-    inference.run()
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(main())
+    finally:
+        loop.close()

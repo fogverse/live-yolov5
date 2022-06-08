@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  cloud-pod:
+    image: ariqbasyar/fogverse:inference-cpu-cloud
+    volumes:
+      - ./logs/:/app/logs/
+    environment:
+    - CONSUMER_SERVERS=kafka-server-1
+    - PRODUCER_SERVERS=kafka-server-1
+    restart: always
+    cpus: 0.75
+    mem_limit: 500M

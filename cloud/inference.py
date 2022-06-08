@@ -1,34 +1,32 @@
+import asyncio
 import cv2
 import os
 import torch
 
 import numpy as np
 
-from fogverse import Producer, ConsumerStorage
-from threading import Thread
+from fogverse import Consumer, Producer, ConsumerStorage
+from fogverse.logging.logging import CsvLogging
 
-class MyConsumer(ConsumerStorage, Thread):
+class MyConsumer(Consumer, ConsumerStorage):
     def __init__(self, keep_messages=False):
         self.consumer_topic = ['preprocess']
-        ConsumerStorage.__init__(self, keep_messages)
-        Thread.__init__(self)
+        Consumer.__init__(self)
+        ConsumerStorage.__init__(self, keep_messages=keep_messages)
 
-class MyCloud(Producer):
+class MyCloud(CsvLogging, Producer):
     def __init__(self, consumer):
         MODEL = os.getenv('MODEL', 'yolov5n')
         self.model = torch.hub.load('ultralytics/yolov5', MODEL)
         self.producer_topic = 'result'
         self.consumer = consumer
-        super().__init__()
+        CsvLogging.__init__(self)
+        Producer.__init__(self)
 
-    def receive(self):
-        return self.consumer.get()
+    async def receive(self):
+        return await self.consumer.get()
 
-    def decode(self, data):
-        self.message = data['message']
-        return super().decode(data['data'])
-
-    def process(self, img):
+    def _process(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
         results = self.model(img)
         preds = results.xyxyn[0].cpu().numpy().astype(object)
@@ -41,12 +39,25 @@ class MyCloud(Producer):
             preds[i] = pred
         return preds
 
-    def send(self, data):
-        headers = {**self.message.headers(), 'type': 'inference'}
-        super().send(data, headers=headers)
+    async def process(self, img):
+        return await self._loop.run_in_executor(None,
+                                               self._process,
+                                               img)
+
+    async def send(self, data):
+        headers = list(self.message.headers)
+        headers.append(('type',b'inference'))
+        await super().send(data, headers=headers)
+
+async def main():
+    consumer = MyConsumer()
+    producer = MyCloud(consumer)
+    tasks = [consumer.run(), producer.run()]
+    try:
+        await asyncio.gather(*tasks)
+    except:
+        for t in tasks:
+            t.close()
 
 if __name__ == '__main__':
-    consumer = MyConsumer()
-    cloud = MyCloud(consumer)
-    consumer.start()
-    cloud.run()
+    asyncio.run(main())

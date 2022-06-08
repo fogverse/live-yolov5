@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  preprocess-pod:
+    image: ariqbasyar/fogverse:preprocess-raspberrypi
+    volumes:
+      - ./logs/:/app/logs/
+    environment:
+    - CONSUMER_SERVERS=${LOCAL_KAFKA}
+    - PRODUCER_SERVERS=kafka-server-1
+    restart: always
+    extra_hosts:
+    - kafka-server-1:${CLOUD_KAFKA}
