@@ -8,23 +8,7 @@ RUN --mount=type=cache,target=/var/cache/apt_update apt update \
     g++ \
     make \
     git \
+    vim \
     curl
 
-ARG LIBRDKAFKA_VER=1.6.2
-ARG LIBKAFKA=librdkafka-$LIBRDKAFKA_VER
-RUN --mount=type=cache,target=/var/cache/librdkafka \
-    curl -L https://github.com/edenhill/librdkafka/archive/refs/tags/v$LIBRDKAFKA_VER.tar.gz | tar xzf - \
-        && cd $LIBKAFKA\
-        && ./configure --prefix=/usr \
-        && make \
-        && make install
-
-ARG C_KAFKA_VER=1.8.2
-ARG KAFKA=confluent-kafka-python-$C_KAFKA_VER
-RUN --mount=type=cache,target=/var/cache/kafka \
-    curl -L https://github.com/confluentinc/confluent-kafka-python/archive/refs/tags/v$C_KAFKA_VER.tar.gz | tar xzf - \
-        && cd $KAFKA \
-        && python setup.py build \
-        && python setup.py install
-
-RUN rm -rf $LIBKAFKA $KAFKA
+RUN pip install pandas aiokafka

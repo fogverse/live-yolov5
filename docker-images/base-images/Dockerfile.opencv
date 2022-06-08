@@ -12,4 +12,3 @@ RUN --mount=type=cache,target=/var/cache/apt_update apt update \
 
 RUN pip install --upgrade pip \
     numpy opencv-python
-

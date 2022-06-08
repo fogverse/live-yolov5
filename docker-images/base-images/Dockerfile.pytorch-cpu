@@ -16,4 +16,3 @@ RUN apt-get update \
 
 RUN pip install --upgrade pip \
     pyyaml typing-extensions numpy torch torchvision
-
