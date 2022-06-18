@@ -18,6 +18,7 @@ def box_label(pred,img,show_label=True):
     """
     if np.ndim(pred) == 3:
         pred = pred[0]
+    if len(pred) == 0: return img
     for p in pred:
         annotator = Annotator(img)
         box = tuple(p[:4])
