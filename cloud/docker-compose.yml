@@ -6,8 +6,9 @@ services:
     volumes:
       - ./logs/:/app/logs/
     environment:
-    - CONSUMER_SERVERS=kafka-server-1
-    - PRODUCER_SERVERS=kafka-server-1
+    - CONSUMER_SERVERS=kafka-server
+    - PRODUCER_SERVERS=kafka-server
+    - SCENARIO=4
     restart: always
     cpus: 0.75
     mem_limit: 500M
