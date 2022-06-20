@@ -5,11 +5,10 @@ import uuid
 
 from fogverse import ConsumerStorage, Producer, Consumer
 from fogverse.util import (
-    calc_datetime, get_timestamp, get_timestamp_str, timestamp_to_datetime
+    calc_datetime, compress_encoding, get_timestamp, get_timestamp_str,
+    numpy_to_base64_url, recover_encoding, timestamp_to_datetime
 )
-from util import (
-    box_label, compress_encoding, numpy_to_base64_url, recover_encoding
-)
+from util import box_label
 
 ENCODING = os.getenv('ENCODING', 'jpg')
 
@@ -63,12 +62,8 @@ class MyConsumerStorage(Consumer, ConsumerStorage):
         return super().decode(data)
 
     def process(self, data):
-        headers = self.message.headers
-        data_type = headers.get('type')
         if self.message.topic == 'input':
             data = compress_encoding(data, ENCODING)
-        elif data_type == 'final':
-            data = numpy_to_base64_url(data, 'jpg')
         self.message.value = ''
         return data
 
@@ -98,7 +93,7 @@ class MyConsumerStorage(Consumer, ConsumerStorage):
         for _data in lst_data:
             if _data['message'].headers['frame'] != frame_idx: continue
             frame = recover_encoding(_data['data'])
-            frame = box_label(pred, frame)
+            box_label(pred, frame, relative=True, inplace=True)
             # print(f'inference for frame {frame_idx}')
             _delay = calc_datetime(_data['input_timestamp'])
             _data['delay'] = _delay
@@ -109,7 +104,7 @@ class MyConsumerStorage(Consumer, ConsumerStorage):
             _data['data'] = numpy_to_base64_url(frame, ENCODING)
             _data['message'].headers = self.message.headers
             _data['type'] = 'final'
-            _data['from'] = 'inference'
+            _data['from'] = 'cloud'
 
     def on_final_send(self, data, cam_id ,frame_idx):
         cam_data = self._data[cam_id]
@@ -172,7 +167,8 @@ def print_send_data(send_data):
                 for msg in value_cam:
                     headers = msg['headers']
                     _frame = headers['frame']
-                    print(f'{indent*2}  frame: {_frame}')
+                    _from = msg['from']
+                    print(f'{indent*2}  frame: {_frame} {_from}')
             else:
                 print(f'{indent}{attr_cam}: {value_cam}')
 
@@ -184,7 +180,7 @@ class MyProducer(Producer):
         self.auto_encode = False
         self.avg_delay = 0
         self.n_avg_delay = 0
-        self.thresh = os.getenv('WAIT_THRESH', 2000)
+        self.thresh = int(os.getenv('WAIT_THRESH', 2000))
         self._loop = loop or asyncio.get_event_loop()
         Producer.__init__(self)
 
@@ -209,7 +205,8 @@ class MyProducer(Producer):
             frames = cam_data['data']
             send_frames = [{
                     'data': i['data'],
-                    'headers': i['message'].headers}
+                    'headers': i['message'].headers,
+                    'from': i['from']}
                 for i in frames if i['type'] == 'final']
             if len(send_frames) == 0: continue
             avg_delay = self.thresh / len(send_frames)
@@ -233,22 +230,23 @@ class MyProducer(Producer):
         self._loop.create_task(task)
 
     async def send(self, data):
-        print_send_data(data)
-        print(self.avg_delay)
         if not data: return
+        print_send_data(data)
+        # print(self.avg_delay)
         for cam_id, cam_data in data.items():
             delay = cam_data['avg_delay']
             for i in range(len(cam_data['data'])):
-                frames = cam_data['data'][i]
-                headers = frames['headers']
+                frame = cam_data['data'][i]
+                headers = frame['headers']
                 headers = [
                     ('cam', headers.get('cam', '').encode()),
                     ('frame', str(headers.get('frame')).encode()),
                     ('timestamp', get_timestamp_str(
                         headers.get('timestamp')).encode()),
                     ('type', str(headers.get('type')).encode()),
+                    ('from', str(frame['from']).encode()),
                 ]
-                _data = frames['data']
+                _data = frame['data']
                 _delay = delay * (i+1) / 1e3
                 self._loop.call_later(_delay, self._send, cam_id,
                                       _data, headers)
