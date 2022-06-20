@@ -8,6 +8,8 @@ services:
     environment:
     - CONSUMER_SERVERS=${LOCAL_KAFKA}
     - PRODUCER_SERVERS=${LOCAL_KAFKA}
+    - SCENARIO=4
+    - CAM_ID=1
     restart: always
     deploy:
       resources:
