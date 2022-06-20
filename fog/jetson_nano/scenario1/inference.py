@@ -25,7 +25,7 @@ socketio = SocketIO(app)
 ENCODING = os.getenv('ENCODING', 'jpg')
 SIZE = (640,480,3)
 
-class MyStorageSk1(OpenCVConsumer, ConsumerStorage):
+class MyStorageSc1(OpenCVConsumer, ConsumerStorage):
     def __init__(self, loop=None):
         OpenCVConsumer.__init__(self, loop=loop)
         ConsumerStorage.__init__(self)
@@ -33,7 +33,7 @@ class MyStorageSk1(OpenCVConsumer, ConsumerStorage):
         self.consumer.set(cv2.CAP_PROP_FRAME_WIDTH, SIZE[0])
         self.consumer.set(cv2.CAP_PROP_FRAME_HEIGHT, SIZE[1])
 
-class MyJetsonSk1(CsvLogging, AbstractConsumer, AbstractProducer, Runnable):
+class MyJetsonSc1(CsvLogging, AbstractConsumer, AbstractProducer, Runnable):
     def __init__(self, consumer, socket: SocketIO, loop=None):
         self.cam_id = get_cam_id()
         MODEL = os.getenv('MODEL', 'yolov5n')
@@ -84,8 +84,8 @@ def index(cam_id=None):
     return render_template('index.html')
 
 async def main(loop):
-    consumer = MyStorageSk1(loop=loop)
-    producer = MyJetsonSk1(consumer, socketio, loop=loop)
+    consumer = MyStorageSc1(loop=loop)
+    producer = MyJetsonSc1(consumer, socketio, loop=loop)
     tasks = [consumer.run(), producer.run()]
     try:
         await asyncio.gather(*tasks)
