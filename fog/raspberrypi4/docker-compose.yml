@@ -7,7 +7,7 @@ services:
       - ./logs/:/app/logs/
     environment:
     - CONSUMER_SERVERS=${LOCAL_KAFKA}
-    - PRODUCER_SERVERS=kafka-server-1
+    - PRODUCER_SERVERS=kafka-server
     restart: always
     extra_hosts:
-    - kafka-server-1:${CLOUD_KAFKA}
+    - kafka-server:${CLOUD_KAFKA}

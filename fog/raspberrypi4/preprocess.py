@@ -4,7 +4,7 @@ import cv2
 from fogverse import Consumer, Producer, ConsumerStorage
 from fogverse.logging.logging import CsvLogging
 
-class MyConsumer(Consumer, ConsumerStorage):
+class MyStorage(Consumer, ConsumerStorage):
     def __init__(self, keep_messages=False):
         self.consumer_topic = ['input']
         Consumer.__init__(self)
@@ -30,7 +30,7 @@ class MyPreprocess(CsvLogging, Producer):
                                                data)
 
 async def main():
-    consumer = MyConsumer()
+    consumer = MyStorage()
     producer = MyPreprocess(consumer)
     tasks = [consumer.run(), producer.run()]
     try:
