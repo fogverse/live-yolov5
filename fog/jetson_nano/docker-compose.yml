@@ -9,13 +9,12 @@ services:
     - CONSUMER_SERVERS=${LOCAL_KAFKA}
     - PRODUCER_SERVERS=${LOCAL_KAFKA}
     - SCENARIO=4
-    - CAM_ID=1
     restart: always
     deploy:
       resources:
         limits:
           cpus: '0.75'
-          memory: 2500M
+          memory: 2800M
         reservations:
           devices:
             - capabilities: [gpu]
