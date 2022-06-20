@@ -33,6 +33,16 @@ def alter_config(topic_name, adm, config):
         if exc is not None:
             raise exc
 
+def create_partitions(topic_name, adm, num_partitions):
+    new_partitions = admin.NewPartitions(topic_name, num_partitions)
+    res = adm.create_partitions([new_partitions])
+    for future in res.values():
+        exc = future.exception(5)
+        if exc is not None:
+            err = exc.args[0]
+            if err.code() == KafkaError.INVALID_PARTITIONS: continue
+            raise exc
+
 def main():
     admins = {}
     parent = Path(os.path.dirname(__file__))
@@ -55,14 +65,17 @@ def main():
             adm = admins[server_name]
             try:
                 create_topic(_topic, adm)
+                status = 'created'
             except KafkaException as e:
                 err = e.args[0]
                 if err.code() == KafkaError.TOPIC_ALREADY_EXISTS:
                     print(f'topic {topic_name} on server {server_name} already \
 exists, altering configs...')
+                    create_partitions(topic_name, adm, _partition)
                     alter_config(topic_name, adm, _config)
+                    status = 'altered'
 
-        print(f'topic {topic_name} for server {_server} has created')
+        print(f'topic {topic_name} for server {_server} has {status}')
     print('done')
 
 if __name__ == '__main__':

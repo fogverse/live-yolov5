@@ -5,13 +5,16 @@ server:
 topic:
   input:
     partitions: 2
-    server: local_kafka
+    server:
+      - local_kafka
+      - cloud_kafka # scenario cloud kafka
     config:
       retention.ms: 2000
       segment.bytes: 9300000
       segment.ms: 1200
+      # max.message.bytes: 10485880
   preprocess:
-    partitions: 2
+    partitions: 1
     server: cloud_kafka
     config:
       retention.ms: 2000
@@ -23,13 +26,24 @@ topic:
       - local_kafka
       - cloud_kafka
     config:
-      retention.ms: 120000
+      retention.ms: 5000
+      segment.bytes: 10000000
+      segment.ms: 1200
+  final_cam_2:
+    partitions: 1
+    server:
+      - local_kafka
+      - cloud_kafka # scenario cloud kafka
+    config:
+      retention.ms: 5000
       segment.bytes: 10000000
       segment.ms: 1200
   final_cam_1:
     partitions: 1
-    server: local_kafka
+    server:
+      - local_kafka
+      - cloud_kafka # scenario cloud kafka
     config:
-      retention.ms: 22000
+      retention.ms: 5000
       segment.bytes: 10000000
-      segment.ms: 5500
+      segment.ms: 1200
