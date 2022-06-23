@@ -47,8 +47,10 @@ class MyJetsonSc2(MyJetson):
         super().__init__(consumer)
 
     async def send(self, data):
-        headers = self.message.headers
+        headers = list(self.message.headers)
         cam_id = get_header(headers, 'cam')
+        headers.append(('from',b'jetson'))
+        self.message.headers = headers
         self.producer_topic = f'final_{cam_id}'
         await super().send(data)
 # ======================================================================
