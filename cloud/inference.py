@@ -7,7 +7,7 @@ import numpy as np
 
 from fogverse import Consumer, Producer, ConsumerStorage
 from fogverse.logging.logging import CsvLogging
-from fogverse.util import numpy_to_base64_url, numpy_to_bytes
+from fogverse.util import get_header, numpy_to_base64_url
 
 class MyStorage(Consumer, ConsumerStorage):
     def __init__(self, keep_messages=False):
@@ -38,7 +38,6 @@ class MyStorageSc3(MyStorage):
 
 class MyCloudSc3(MyCloud):
     def __init__(self, consumer):
-        self.producer_topic = 'final_cam_1'
         super().__init__(consumer)
 
     def _process(self, data):
@@ -52,6 +51,8 @@ class MyCloudSc3(MyCloud):
         headers = list(self.message.headers)
         headers.append(('type',b'final'))
         headers.append(('from',b'cloud'))
+        cam_id = get_header(headers, 'cam')
+        self.producer_topic = f'final_{cam_id}'
         await super().send(data, headers=headers)
 # ======================================================================
 class MyStorageSc4(MyStorage):
