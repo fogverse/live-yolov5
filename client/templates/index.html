@@ -101,7 +101,7 @@
       const now = new Date()
       tsCreatedVal.text(tsCreated.toISOString())
       tsNowVal.text(now.toISOString())
-      const delay = Math.abs(now - tsCreated) - (7*60*60*1000)
+      const delay = Math.abs(now - tsCreated - (7*60*60*1000))
       delayVal.text(`${delay} ms`)
 
       var fps = 1000/avgDelayFrame
