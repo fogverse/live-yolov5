@@ -6,21 +6,24 @@ from fogverse import Consumer
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 
-def page_not_found(e):
+from fogverse.logging import CsvLogging
+
+def page_not_found(*args):
   return render_template('404.html'), 404
 
 app = Flask(__name__)
 app.register_error_handler(404, page_not_found)
 socketio = SocketIO(app)
 
-class MyConsumer(Consumer):
+class MyClient(CsvLogging, Consumer):
     def __init__(self, socket: SocketIO, loop=None):
         self.socket = socket
         self.sockets = {}
         self.auto_encode = False
         self.topic_pattern = '^final_cam_[0-9a-zA-Z-]+$'
         self.consumer_conf = {'group_id': str(uuid.uuid4())}
-        super().__init__(loop=loop)
+        CsvLogging.__init__(self)
+        Consumer.__init__(self,loop=loop)
         self.counter = 1
 
     async def send(self, data):
@@ -36,11 +39,11 @@ class MyConsumer(Consumer):
 @app.route('/<cam_id>/')
 def index(cam_id=None):
     if not cam_id:
-        return render_template('404.html')
+        return page_not_found()
     return render_template('index.html')
 
 async def main(loop):
-    consumer = MyConsumer(socketio, loop=loop)
+    consumer = MyClient(socketio, loop=loop)
     tasks = [consumer.run()]
     try:
         await asyncio.gather(*tasks)

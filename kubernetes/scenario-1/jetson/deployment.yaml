@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fogverse-jetson-deployment
+spec:
+  selector:
+    matchLabels:
+      app: fogverse-jetson-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fogverse-jetson-deployment
+        jetson: "true"
+        scenario: "1"
+    spec:
+      containers:
+      - name: fogverse-jetson-container
+        image: ariqbasyar/fogverse:inference-gpu-jetson-sc1
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            memory: "200M"
+            cpu: "100m"
+          limits:
+            memory: "2700M"
+            cpu: "750m"
+        imagePullPolicy: Always
+        env:
+        - name: CONSUMER_SERVERS
+          value: "$LOCAL_KAFKA"
+        - name: PRODUCER_SERVERS
+          value: "$LOCAL_KAFKA"
+        volumeMounts:
+        - name: log-data
+          mountPath: /app/logs/
+        - name: device-video0
+          mountPath: /dev/video0
+        securityContext:
+          privileged: true
+      volumes:
+      - name: log-data
+        hostPath:
+          path: /tmp/fogverse/logs/
+      - name: device-video0
+        hostPath:
+          path: /dev/video0
+      nodeSelector:
+        kubernetes.io/hostname: jetson-nano
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fogverse-sc1-jetson-svc
+spec:
+  selector:
+    app: fogverse-jetson-deployment
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000

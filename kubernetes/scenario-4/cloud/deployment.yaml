@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fogverse-cloud-deployment
+spec:
+  selector:
+    matchLabels:
+      app: fogverse-cloud-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fogverse-cloud-deployment
+        cloud: "true"
+    spec:
+      containers:
+      - name: fogverse-cloud-container
+        image: ariqbasyar/fogverse:inference-cpu-cloud
+        imagePullPolicy: Always
+        env:
+        - name: CONSUMER_SERVERS
+          value: "kafka-server-1"
+        - name: PRODUCER_SERVERS
+          value: "kafka-server-1"
+      nodeSelector:
+        cloud.google.com/gke-nodepool: pool-tugas-akhir

@@ -7,7 +7,7 @@ topic:
     partitions: 2
     server:
       - local_kafka
-      - cloud_kafka # scenario cloud kafka
+      # - cloud_kafka # scenario cloud kafka
     config:
       retention.ms: 2000
       segment.bytes: 9300000

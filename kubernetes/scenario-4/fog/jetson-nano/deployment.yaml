@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fogverse-jetson-deployment
+spec:
+  selector:
+    matchLabels:
+      app: fogverse-jetson-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fogverse-jetson-deployment
+        jetson: "true"
+    spec:
+      containers:
+      - name: fogverse-jetson-container
+        image: ariqbasyar/fogverse:inference-gpu-jetson
+        resources:
+          requests:
+            memory: "500M"
+            cpu: "250m"
+          limits:
+            memory: "2700M"
+            cpu: "750m"
+        imagePullPolicy: Always
+        env:
+        - name: CONSUMER_SERVERS
+          value: "$LOCAL"
+        - name: PRODUCER_SERVERS
+          value: "$LOCAL"
+      nodeSelector:
+        kubernetes.io/hostname: jetson-nano

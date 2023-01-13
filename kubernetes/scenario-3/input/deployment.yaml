@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fogverse-input-deployment
+spec:
+  selector:
+    matchLabels:
+      app: fogverse-input-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fogverse-input-deployment
+        input: "true"
+    spec:
+      containers:
+      - name: fogverse-input-container
+        image: ariqbasyar/fogverse:input-1
+        imagePullPolicy: Always
+        env:
+        - name: PRODUCER_SERVERS
+          value: "$LOCAL"
+        volumeMounts:
+        - name: device-video0
+          mountPath: /dev/video0
+        securityContext:
+          privileged: true
+      volumes:
+      - name: device-video0
+        hostPath:
+          path: /dev/video0
+      nodeSelector:
+        kubernetes.io/hostname: debian-camera
