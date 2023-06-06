@@ -2,6 +2,8 @@ import os
 import asyncio
 import torch
 
+import numpy as np
+
 from fogverse import Consumer, Producer, ConsumerStorage
 from fogverse.logging.logging import CsvLogging
 from fogverse.util import get_header, numpy_to_base64_url
@@ -17,10 +19,18 @@ class MyStorage(Consumer, ConsumerStorage):
 class MyJetson(CsvLogging, Producer):
     def __init__(self, consumer):
         MODEL = os.getenv('MODEL', 'yolov5n')
-        self.model = torch.hub.load('ultralytics/yolov5', MODEL)
+        # using cloned repo with tag v6.0
+        self.model = torch.hub.load('yolov5', MODEL, source='local')
         self.consumer = consumer
         CsvLogging.__init__(self)
         Producer.__init__(self)
+
+    async def _after_start(self):
+        # to fix the first inference bottleneck
+        dummy = (np.random.rand(480,640,3)*255).astype(np.uint8)
+        print('warming up')
+        self.model(dummy)
+        print('ready')
 
     async def receive(self):
         return await self.consumer.get()
@@ -35,7 +45,8 @@ class MyJetson(CsvLogging, Producer):
                                                data)
 
     def encode(self, img):
-        return numpy_to_base64_url(img, ENCODING).encode()
+        base64_url = numpy_to_base64_url(img, ENCODING)
+        return base64_url.encode()
 
     async def send(self, data):
         headers = list(self.message.headers)
@@ -43,8 +54,8 @@ class MyJetson(CsvLogging, Producer):
         await super().send(data, headers=headers)
 # ======================================================================
 class MyJetsonSc2(MyJetson):
-    def __init__(self, consumer):
-        super().__init__(consumer)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     async def send(self, data):
         headers = list(self.message.headers)
@@ -55,9 +66,9 @@ class MyJetsonSc2(MyJetson):
         await super().send(data)
 # ======================================================================
 class MyJetsonSc4(MyJetson):
-    def __init__(self, consumer):
+    def __init__(self, *args, **kwargs):
         self.producer_topic = 'result'
-        super().__init__(consumer)
+        super().__init__(*args, **kwargs)
 
 scenarios = {
     2: (MyStorage, MyJetsonSc2),
@@ -67,6 +78,7 @@ scenarios = {
 async def main():
     scenario = int(os.getenv('SCENARIO', 4))
     _Consumer, _Producer = scenarios[scenario]
+
     consumer = _Consumer()
     producer = _Producer(consumer)
     tasks = [consumer.run(), producer.run()]
