@@ -7,7 +7,8 @@ import numpy as np
 
 from fogverse import Consumer, Producer, ConsumerStorage
 from fogverse.logging.logging import CsvLogging
-from fogverse.util import get_header, numpy_to_base64_url
+from fogverse.util import (get_header, numpy_to_base64_url, recover_encoding,
+                           bytes_to_numpy)
 
 class MyStorage(Consumer, ConsumerStorage):
     def __init__(self, keep_messages=False):
@@ -17,7 +18,7 @@ class MyStorage(Consumer, ConsumerStorage):
 class MyCloud(CsvLogging, Producer):
     def __init__(self, consumer):
         MODEL = os.getenv('MODEL', 'yolov5n')
-        self.model = torch.hub.load('ultralytics/yolov5', MODEL)
+        self.model = torch.hub.load('yolov5', MODEL, source='local')
         self.consumer = consumer
         CsvLogging.__init__(self)
         Producer.__init__(self)
@@ -64,6 +65,16 @@ class MyCloudSc4(MyCloud):
     def __init__(self, consumer):
         self.producer_topic = 'result'
         super().__init__(consumer)
+
+    def decode(self, data):
+        self.message = data['message']
+        self._message_extra = data.get('extra',{})
+        data = data['data']
+        headers = list(self.message.headers)
+        compress_name = get_header(headers, 'compress', 'original')
+        if compress_name in ['original', 'grayscale']:
+            return bytes_to_numpy(data)
+        return recover_encoding(data)
 
     def _process(self, img):
         if img.ndim == 2:
