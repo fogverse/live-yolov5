@@ -181,8 +181,11 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,dotenv,python
 
+# This Project
 *.config
 yolov5*
 utils/
 
 logs/
+
+val2017.zip
