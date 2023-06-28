@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  forwarder-pod:
+    image: ariqbasyar/fogverse:master-forwarder
+    volumes:
+      - ./logs/:/app/logs/
+    environment:
+    - CONSUMER_SERVERS=${CLOUD_KAFKA}
+    - PRODUCER_SERVERS=${LOCAL_KAFKA}
+    - PYTHONUNBUFFERED=1
+    extra_hosts:
+    - kafka-server:${CLOUD_KAFKA}
+  merger-pod:
+    image: ariqbasyar/fogverse:master-inference-merger
+    volumes:
+      - ./logs/:/app/logs/
+    environment:
+    - CONSUMER_SERVERS=${LOCAL_KAFKA}
+    - PRODUCER_SERVERS=${LOCAL_KAFKA}
+    - WAIT_THRESH=4000
+    - PYTHONUNBUFFERED=1
