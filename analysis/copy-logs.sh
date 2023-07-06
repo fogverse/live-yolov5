@@ -1,7 +1,6 @@
-# ROOT_PROJECT=$(dirname $(realpath $0))/..
 ROOT_PROJECT=$(dirname $0)/..
 ROOT_PROJECT=$(cd $ROOT_PROJECT && pwd)
-TO=$ROOT_PROJECT/analysis/$1/scenario-$2/
+TO=$ROOT_PROJECT/analysis/$1/
 echo WARNING! selected folder $1
 echo WARNING! copying logs to $TO
 set -xe
