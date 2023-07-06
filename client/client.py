@@ -27,14 +27,14 @@ class MyClient(CsvLogging, Consumer):
         self.counter = 1
 
     async def send(self, data):
-        namespace = f'/{self.message.topic}'
+        topic = self.message.topic
         headers = self.message.headers
         headers = {key: value.decode() for key, value in headers}
         data = {
             'src': data,
             'headers': headers,
         }
-        self.socket.emit('frame', data, namespace=namespace)
+        self.socket.emit(topic, data)
 
 @app.route('/<cam_id>/')
 def index(cam_id=None):
