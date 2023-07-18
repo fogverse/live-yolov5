@@ -7,8 +7,7 @@ import numpy as np
 
 from fogverse import Consumer, Producer, ConsumerStorage
 from fogverse.logging.logging import CsvLogging
-from fogverse.util import (get_header, numpy_to_base64_url, recover_encoding,
-                           bytes_to_numpy)
+from fogverse.util import get_header, numpy_to_base64_url
 
 class MyStorage(Consumer, ConsumerStorage):
     def __init__(self, keep_messages=False):
@@ -67,14 +66,12 @@ class MyCloudSc4(MyCloud):
         super().__init__(consumer)
 
     def decode(self, data):
-        self.message = data['message']
-        self._message_extra = data.get('extra',{})
-        data = data['data']
-        headers = list(self.message.headers)
-        compress_name = get_header(headers, 'compress', 'original')
-        if compress_name in ['original', 'grayscale']:
-            return bytes_to_numpy(data)
-        return recover_encoding(data)
+        data = super().decode(data)
+        if len(data.shape) == 1:
+            # in case the data is encoded with cv2.imencode
+            # case for compressed image
+            return cv2.imdecode(data, cv2.IMREAD_COLOR)
+        return data
 
     def _process(self, img):
         if img.ndim == 2:
