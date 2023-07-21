@@ -1,11 +1,15 @@
-confluent_kafka==1.0
-aiokafka==0.7.2
-matplotlib>=3.2.2
-numpy>=1.18.5
-opencv-python>=4.1.2
-Pillow>=7.1.2
-PyYAML>=5.3.1
-requests>=2.23.0
-scipy>=1.4.1
-torch>=1.7.0
-torchvision>=0.8.1
+aiokafka==0.8.1
+confluent-kafka==2.1.1
+Flask==2.2.2
+Flask-SocketIO==5.3.4
+-e git+ssh://git@github.com/fogverse/live-yolov5.git@d552427c35307130ab76654bfe3ccc20a9df6d1a#egg=fogverse
+kafka-python==2.0.2
+matplotlib==3.7.1
+numpy==1.24.3
+opencv-python>=4.6.0
+pandas==1.5.3
+Pillow==9.4.0
+PyYAML==6.0
+scipy==1.10.1
+torch==2.0.1
+torchvision>=0.13.1
