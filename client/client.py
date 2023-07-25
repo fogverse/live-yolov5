@@ -61,4 +61,5 @@ if __name__ == '__main__':
     loop = asyncio.new_event_loop()
     thread = threading.Thread(target=run_consumer, args=(loop,))
     thread.start()
-    socketio.run(app, debug=True, host='0.0.0.0', use_reloader=False)
+    socketio.run(app, debug=True, host='0.0.0.0', use_reloader=False,
+                 allow_unsafe_werkzeug=True)

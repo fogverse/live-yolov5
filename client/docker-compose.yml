@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  client-pod:
+    image: ariqbasyar/fogverse:client
+    volumes:
+      - ./logs/:/app/logs/
+    #entrypoint: /bin/bash
+    ports:
+    - "5000:5000"
+    environment:
+    - CONSUMER_SERVERS=${LOCAL_KAFKA}
