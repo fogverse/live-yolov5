@@ -25,12 +25,13 @@ case $2 in
         ;;
     4)
         # scenario 4
-        scp debian-camera:~/fogverse/logs/log_MyFrameProducerSc2_4.csv $TO
+        scp debian-camera:~/studi-mandiri/logs/log_MyFrameProducerSc2_4.csv $TO
         scp raspi:~/studi-mandiri/logs/log_MyPreprocess.csv $TO
         scp jetson:~/Documents/kuliah/term_9/studi-mandiri/logs/log_MyJetsonSc4.csv $TO
-        gcloud compute scp cloud-jakarta:~/fogverse/logs/log_MyCloudSc4.csv $TO
-        scp debian-master:~/fogverse/logs/log_MyForwarder.csv $TO
-        scp debian-master:~/fogverse/logs/log_MyMerger.csv $TO
+        gcloud compute scp cloud-jakarta:~/studi-mandiri/logs/log_MyCloudSc4.csv $TO
+        scp debian-master:~/studi-mandiri/logs/log_MyForwarder.csv $TO
+        scp debian-master:~/studi-mandiri/logs/log_MyMergerConsumer.csv $TO
+        scp debian-master:~/studi-mandiri/logs/log_MyMergerProducer.csv $TO
         cp $ROOT_PROJECT/client/logs/log_MyClient.csv $TO
         ;;
     *)
