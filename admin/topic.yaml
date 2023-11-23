@@ -9,9 +9,9 @@ topic:
       - local_kafka
       # - cloud_kafka # scenario cloud kafka
     config:
-      retention.ms: 2000
+      retention.ms: 5000
       segment.bytes: 9300000
-      segment.ms: 1200
+      segment.ms: 3200
       # max.message.bytes: 10485880
   preprocess:
     partitions: 1

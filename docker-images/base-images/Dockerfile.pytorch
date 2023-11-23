@@ -14,5 +14,4 @@ RUN apt-get update \
         libpng-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip \
-    pyyaml typing-extensions numpy torch torchvision
+RUN pip install --no-cache-dir --upgrade pip numpy torch torchvision
